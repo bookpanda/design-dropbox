@@ -1,0 +1,58 @@
+# === Java ===
+*.class
+*.jar
+*.war
+*.ear
+
+# === Logs ===
+*.log
+logs/
+*.pid
+
+# === OS files ===
+.DS_Store
+Thumbs.db
+
+# === Gradle ===
+gradle/
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+gradle-app.setting
+
+# === Maven (if any) ===
+target/
+
+# === IntelliJ IDEA ===
+.idea/
+*.iml
+*.iws
+out/
+
+# === Eclipse ===
+.project
+.classpath
+.csettings/
+.settings/
+bin/
+
+# === VS Code ===
+.vscode/
+
+# === Test Reports ===
+test-output/
+surefire-reports/
+
+# === Environment / Secrets ===
+.env
+*.key
+*.pem
+*.crt
+*.p12
+
+# === Local Config ===
+application-local.yml
+application-local.properties
+
+# === Others ===
+node_modules/
