@@ -11,6 +11,10 @@ module "s3" {
   bucket_name = local.bucket_name
 }
 
+module "dynamodb" {
+  source = "./modules/dynamodb"
+}
+
 # module "iam" {
 #   source        = "./modules/iam"
 #   bucket_name   = local.bucket_name
