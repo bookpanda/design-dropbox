@@ -9,12 +9,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-// import com.dropbox.file.dto.CreateShortFileRequest;
-// import com.bitly.file.dto.CreateShortFileResponse;
-
 import com.dropbox.file.dto.GetFileResponse;
-import com.dropbox.file.dto.UploadFileRequest;
-import com.dropbox.file.dto.UploadFileResponse;
+import com.dropbox.file.dto.GetUploadUrlRequest;
+import com.dropbox.file.dto.GetUploadUrlResponse;
 
 @RestController
 @RequestMapping("/files")
@@ -25,18 +22,24 @@ public class FileController {
         this.fileService = fileService;
     }
 
-    @GetMapping("/{fileId}")
-    public GetFileResponse getRedirectFile(@PathVariable("fileId") String code) {
-        // String originalFile = fileService.getRedirectFile(code);
+    @GetMapping("/upload-url")
+    public GetUploadUrlResponse getUploadUrl(@RequestBody GetUploadUrlRequest request) {
+        // client will upload to S3 (user's folder)
+        String uploadUrl = fileService.getUploadUrl(request.getFileName(), request.getMimeType());
 
-        return new GetFileResponse();
+        return new GetUploadUrlResponse(uploadUrl);
     }
 
-    @PostMapping
-    public UploadFileResponse uploadFile(@RequestBody UploadFileRequest request) {
-        // String shortFile = fileService.createShortFile(request.getOriginalFile(),
-        // request.getCustomCode());
+    @GetMapping("/{fileId}")
+    public GetFileResponse getFile(@PathVariable("fileId") String code) {
+        // String originalFile = fileService.getRedirectFile(code);
 
-        return new UploadFileResponse();
+        return new GetFileResponse(
+                "fileId",
+                "fileName",
+                "fileSize",
+                "fileMimeType",
+                "fileUrl",
+                "uploadedBy");
     }
 }

@@ -14,7 +14,7 @@ public class FileService {
         // this.baseFile = baseFile;
     }
 
-    public String createShortFile(String originalFile, String customCode) {
+    public String getUploadUrl(String fileName, String mimeType) {
         return "";
     }
 
