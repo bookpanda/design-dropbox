@@ -2,7 +2,7 @@ resource "aws_s3_bucket" "uploads" {
   bucket        = var.bucket_name
   force_destroy = true
   tags = {
-    Name = "dropbox-metadata"
+    Name = "dropbox-uploads"
   }
 }
 
@@ -16,7 +16,7 @@ resource "aws_s3_bucket_public_access_block" "uploads" {
 }
 
 resource "aws_iam_policy" "s3_policy" {
-  name        = "pdf2br-s3-policy"
+  name        = "dropbox-s3-policy"
   description = "Policy to allow access to the S3 bucket"
   policy = jsonencode({
     Version = "2012-10-17"
