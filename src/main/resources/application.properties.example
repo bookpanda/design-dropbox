@@ -7,3 +7,4 @@ server.port=8080
 
 app.s3.bucket=
 app.dynamodb.shares-table=dropbox-shares
+jwt.secret=a-string-secret-at-least-256-bits-long
