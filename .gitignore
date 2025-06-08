@@ -53,6 +53,7 @@ surefire-reports/
 # === Local Config ===
 application-local.yml
 application-local.properties
+application.properties
 
 # === Others ===
 node_modules/
