@@ -13,6 +13,8 @@ import com.dropbox.file.dto.GetFileResponse;
 import com.dropbox.file.dto.GetUploadUrlRequest;
 import com.dropbox.file.dto.GetUploadUrlResponse;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/files")
 public class FileController {
@@ -23,7 +25,7 @@ public class FileController {
     }
 
     @PostMapping("/upload-url")
-    public GetUploadUrlResponse getUploadUrl(@RequestBody GetUploadUrlRequest request) {
+    public GetUploadUrlResponse getUploadUrl(@Valid @RequestBody GetUploadUrlRequest request) {
         // client will upload to S3 (user's folder)
         String uploadUrl = fileService.getUploadUrl("user", request.getFileName(), request.getMimeType());
 
