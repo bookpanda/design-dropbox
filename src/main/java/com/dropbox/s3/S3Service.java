@@ -7,7 +7,10 @@ import software.amazon.awssdk.services.s3.model.*;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
+
+import java.net.URL;
 import java.time.Duration;
+import java.util.List;
 
 @Service
 public class S3Service {
@@ -56,5 +59,44 @@ public class S3Service {
                 .build();
 
         return s3Client.headObject(request);
+    }
+
+    public String initiateMultipartUpload(String key) {
+        CreateMultipartUploadRequest createRequest = CreateMultipartUploadRequest.builder()
+                .bucket(bucket)
+                .key(key)
+                .build();
+
+        CreateMultipartUploadResponse response = s3Client.createMultipartUpload(createRequest);
+        return response.uploadId();
+    }
+
+    public URL generatePresignedPartUploadUrl(String key, String uploadId, int partNumber) {
+        UploadPartRequest uploadPartRequest = UploadPartRequest.builder()
+                .bucket(bucket)
+                .key(key)
+                .uploadId(uploadId)
+                .partNumber(partNumber)
+                .build();
+
+        return s3Presigner.presignUploadPart(p -> p
+                .signatureDuration(Duration.ofMinutes(15))
+                .uploadPartRequest(uploadPartRequest))
+                .url();
+    }
+
+    public void completeMultipartUpload(String key, String uploadId, List<CompletedPart> parts) {
+        CompletedMultipartUpload completedMultipartUpload = CompletedMultipartUpload.builder()
+                .parts(parts)
+                .build();
+
+        CompleteMultipartUploadRequest completeRequest = CompleteMultipartUploadRequest.builder()
+                .bucket(bucket)
+                .key(key)
+                .uploadId(uploadId)
+                .multipartUpload(completedMultipartUpload)
+                .build();
+
+        s3Client.completeMultipartUpload(completeRequest);
     }
 }

@@ -6,7 +6,7 @@ public class GetUploadUrlRequest {
     @NotBlank(message = "fileId is required")
     private String fileId;
 
-    public GetUploadUrlRequest(String fileId, String userId) {
+    public GetUploadUrlRequest(String fileId) {
         this.fileId = fileId;
     }
 

@@ -11,6 +11,7 @@ import com.dropbox.file.dto.GetFileResponse;
 import com.dropbox.s3.S3Service;
 import com.dropbox.shares.SharesService;
 
+import software.amazon.awssdk.services.s3.model.CompletedPart;
 import software.amazon.awssdk.services.s3.model.HeadObjectResponse;
 
 @Service
@@ -104,6 +105,19 @@ public class FileService {
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Share not found.");
         }
+    }
+
+    public String initMultipart(String userId, String fileId) {
+        String key = userId + "/" + fileId;
+        return s3Service.initiateMultipartUpload(key);
+    }
+
+    public String getPartUploadUrl(String key, String uploadId, int partNumber) {
+        return s3Service.generatePresignedPartUploadUrl(key, uploadId, partNumber).toString();
+    }
+
+    public void completeMultipartUpload(String key, String uploadId, List<CompletedPart> partETags) {
+        s3Service.completeMultipartUpload(key, uploadId, partETags);
     }
 
 }

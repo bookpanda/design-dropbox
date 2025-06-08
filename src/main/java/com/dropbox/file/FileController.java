@@ -13,8 +13,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.dropbox.file.dto.GetFileResponse;
+import com.dropbox.file.dto.GetPartUploadUrlRequest;
 import com.dropbox.file.dto.GetUploadUrlRequest;
 import com.dropbox.file.dto.GetUploadUrlResponse;
+import com.dropbox.file.dto.InitMultipartResponse;
+import com.dropbox.file.dto.MultipartCompleteRequest;
 import com.dropbox.file.dto.ShareFileRequest;
 
 import jakarta.validation.Valid;
@@ -74,5 +77,35 @@ public class FileController {
         return response;
     }
 
-    // do multipart upload
+    @PostMapping("/multipart")
+    public InitMultipartResponse initMultipartUpload(@AuthenticationPrincipal Jwt jwt,
+            @Valid @RequestBody GetUploadUrlRequest request) {
+        String userId = jwt.getClaimAsString("userId");
+        String uploadUrl = fileService.initMultipart(userId, request.getFileId());
+
+        return new InitMultipartResponse(uploadUrl);
+    }
+
+    @PostMapping("/multipart/{uploadId}")
+    public GetUploadUrlResponse getPartUploadUrl(@AuthenticationPrincipal Jwt jwt,
+            @Valid @RequestBody GetPartUploadUrlRequest request, @PathVariable("uploadId") String uploadId) {
+        String userId = jwt.getClaimAsString("userId");
+        String key = userId + "/" + request.getFileId();
+
+        String uploadUrl = fileService.getPartUploadUrl(key, uploadId, request.getPartNumber());
+
+        return new GetUploadUrlResponse(uploadUrl);
+    }
+
+    @PostMapping("/multipart/{uploadId}/complete")
+    public ResponseEntity<Void> completeMultipartUpload(@AuthenticationPrincipal Jwt jwt,
+            @Valid @RequestBody MultipartCompleteRequest request, @PathVariable("uploadId") String uploadId) {
+        String userId = jwt.getClaimAsString("userId");
+        String key = userId + "/" + request.getFileId();
+
+        fileService.completeMultipartUpload(key, uploadId, request.getParts());
+
+        return ResponseEntity.ok().build();
+    }
+
 }
