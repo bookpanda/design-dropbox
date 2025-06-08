@@ -5,11 +5,8 @@ import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
+import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
-
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.file.Path;
 import java.time.Duration;
 
 @Service
@@ -24,10 +21,10 @@ public class S3Service {
         this.s3Presigner = s3Presigner;
     }
 
-    public String generatePresignedUploadUrl(String userId, String key, Duration expiration) {
+    public String generatePresignedUploadUrl(String userId, String fileId, Duration expiration) {
         var putRequest = PutObjectRequest.builder()
                 .bucket(bucket)
-                .key(userId + "/" + key)
+                .key(userId + "/" + fileId)
                 .build();
 
         var presignRequest = PutObjectPresignRequest.builder()
@@ -38,16 +35,41 @@ public class S3Service {
         return s3Presigner.presignPutObject(presignRequest).url().toString();
     }
 
-    public void uploadFile(String key, Path filePath) {
-        s3Client.putObject(PutObjectRequest.builder().bucket(bucket).key(key).build(), filePath);
+    public String generatePresignedDownloadUrl(String ownerId, String fileId, Duration expiration) {
+        var getRequest = GetObjectRequest.builder()
+                .bucket(bucket)
+                .key(ownerId + "/" + fileId)
+                .build();
+
+        var presignRequest = GetObjectPresignRequest.builder()
+                .getObjectRequest(getRequest)
+                .signatureDuration(expiration)
+                .build();
+
+        return s3Presigner.presignGetObject(presignRequest).url().toString();
     }
 
-    public byte[] downloadFile(String key) {
-        try {
-            var inputStream = s3Client.getObject(GetObjectRequest.builder().bucket(bucket).key(key).build());
-            return inputStream.readAllBytes();
-        } catch (IOException e) {
-            throw new UncheckedIOException("Failed to read S3 object", e);
-        }
+    // public void uploadFile(String key, Path filePath) {
+    // s3Client.putObject(PutObjectRequest.builder().bucket(bucket).key(key).build(),
+    // filePath);
+    // }
+
+    // public byte[] downloadFile(String key) {
+    // try {
+    // var inputStream =
+    // s3Client.getObject(GetObjectRequest.builder().bucket(bucket).key(key).build());
+    // return inputStream.readAllBytes();
+    // } catch (IOException e) {
+    // throw new UncheckedIOException("Failed to read S3 object", e);
+    // }
+    // }
+
+    public HeadObjectResponse getObjectMetadata(String ownerId, String fileId) {
+        var request = HeadObjectRequest.builder()
+                .bucket(bucket)
+                .key(ownerId + "/" + fileId)
+                .build();
+
+        return s3Client.headObject(request);
     }
 }

@@ -1,7 +1,9 @@
 spring.application.name=dropbox
 spring.devtools.restart.enabled=true
 spring.jackson.property-naming-strategy=SNAKE_CASE
+spring.security.oauth2.resourceserver.jwt.secret=your-secret-key
 server.port=8080
 
 
 app.s3.bucket=
+app.dynamodb.shares-table=dropbox-shares

@@ -33,16 +33,13 @@ public class FileController {
         return new GetUploadUrlResponse(uploadUrl);
     }
 
-    @GetMapping("/{fileId}")
-    public GetFileResponse getFile(@PathVariable("fileId") String code) {
-        // String originalFile = fileService.getRedirectFile(code);
+    @GetMapping("/{fileId}/users/{ownerId}")
+    public GetFileResponse getFile(@AuthenticationPrincipal Jwt jwt,
+            @PathVariable("ownerId") String ownerId,
+            @PathVariable("fileId") String fileId) {
+        String userId = jwt.getClaimAsString("userId");
+        GetFileResponse response = fileService.getFile(userId, ownerId, fileId);
 
-        return new GetFileResponse(
-                "fileId",
-                "fileName",
-                "fileSize",
-                "fileMimeType",
-                "fileUrl",
-                "uploadedBy");
+        return response;
     }
 }
