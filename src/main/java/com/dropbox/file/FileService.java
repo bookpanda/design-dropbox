@@ -60,4 +60,16 @@ public class FileService {
         }
     }
 
+    public void unshareFile(String userId, String ownerId, String fileId) {
+        if (sharesService.shareExists(userId, ownerId + "/" + fileId)) {
+            if (userId.equals(ownerId)) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot unshare your own file.");
+            }
+
+            sharesService.removeShare(userId, ownerId + "/" + fileId);
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Share not found.");
+        }
+    }
+
 }

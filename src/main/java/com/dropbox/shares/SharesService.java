@@ -45,10 +45,10 @@ public class SharesService {
                 dynamoDbClient.putItem(request);
         }
 
-        public Map<String, AttributeValue> getItem(String userId, String fileName) {
+        public Map<String, AttributeValue> getItem(String userId, String fileId) {
                 Map<String, AttributeValue> key = Map.of(
                                 "userId", AttributeValue.builder().s(userId).build(),
-                                "fileName", AttributeValue.builder().s(fileName).build());
+                                "fileId", AttributeValue.builder().s(fileId).build());
 
                 GetItemRequest request = GetItemRequest.builder()
                                 .tableName(tableName)
@@ -58,10 +58,10 @@ public class SharesService {
                 return dynamoDbClient.getItem(request).item();
         }
 
-        public void deleteItem(String userId, String fileName) {
+        public void removeShare(String userId, String fileId) {
                 Map<String, AttributeValue> key = Map.of(
                                 "userId", AttributeValue.builder().s(userId).build(),
-                                "fileName", AttributeValue.builder().s(fileName).build());
+                                "fileId", AttributeValue.builder().s(fileId).build());
 
                 DeleteItemRequest request = DeleteItemRequest.builder()
                                 .tableName(tableName)

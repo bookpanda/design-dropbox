@@ -3,6 +3,7 @@ package com.dropbox.file;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -53,4 +54,17 @@ public class FileController {
 
         return ResponseEntity.ok().build();
     }
+
+    @DeleteMapping("/share")
+    public ResponseEntity<Void> unshareFile(@AuthenticationPrincipal Jwt jwt,
+            @Valid @RequestBody ShareFileRequest request) {
+        String ownerId = jwt.getClaimAsString("userId");
+        fileService.unshareFile(request.getUserId(), ownerId, request.getFileId());
+
+        return ResponseEntity.ok().build();
+    }
+
+    // get all avail files
+
+    // do multipart upload
 }
