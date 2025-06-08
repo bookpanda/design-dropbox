@@ -3,6 +3,9 @@ Implementing Dropbox, referencing design from [Hello Interview](https://www.hell
 
 ## Commands
 ```bash
+tree -I ".gradle|.vscode|bin|build|gradle|infrastructure"
+gradle dependencies
+
 ./gradlew bootRun --continuous
 # in the other terminal
 ./gradlew build --continuous

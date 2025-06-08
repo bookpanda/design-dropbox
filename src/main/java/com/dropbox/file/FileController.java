@@ -22,10 +22,10 @@ public class FileController {
         this.fileService = fileService;
     }
 
-    @GetMapping("/upload-url")
+    @PostMapping("/upload-url")
     public GetUploadUrlResponse getUploadUrl(@RequestBody GetUploadUrlRequest request) {
         // client will upload to S3 (user's folder)
-        String uploadUrl = fileService.getUploadUrl(request.getFileName(), request.getMimeType());
+        String uploadUrl = fileService.getUploadUrl("user", request.getFileName(), request.getMimeType());
 
         return new GetUploadUrlResponse(uploadUrl);
     }
