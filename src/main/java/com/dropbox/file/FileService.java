@@ -20,7 +20,6 @@ public class FileService {
 
     public String getUploadUrl(String userId, String fileName, String mimeType) {
         return s3Service.generatePresignedUploadUrl(
-                "your-bucket-name",
                 userId,
                 fileName,
                 java.time.Duration.ofMinutes(15));

@@ -1,3 +1,6 @@
 spring.application.name=dropbox
+spring.devtools.restart.enabled=true
+server.port=8080
+
 
 app.s3.bucket=
