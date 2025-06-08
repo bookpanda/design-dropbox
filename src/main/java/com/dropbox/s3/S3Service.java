@@ -27,7 +27,7 @@ public class S3Service {
     public String generatePresignedUploadUrl(String userId, String key, Duration expiration) {
         var putRequest = PutObjectRequest.builder()
                 .bucket(bucket)
-                .key(key)
+                .key(userId + "/" + key)
                 .build();
 
         var presignRequest = PutObjectPresignRequest.builder()

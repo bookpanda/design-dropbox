@@ -6,19 +6,20 @@ public class GetUploadUrlRequest {
     @NotBlank(message = "fileName is required")
     private String fileName;
 
-    @NotBlank(message = "mimeType is required")
-    private String mimeType;
+    // in prod, this will be from auth header
+    @NotBlank(message = "userId is required")
+    private String userId;
 
-    public GetUploadUrlRequest(String fileName, String mimeType) {
+    public GetUploadUrlRequest(String fileName, String userId) {
         this.fileName = fileName;
-        this.mimeType = mimeType;
+        this.userId = userId;
     }
 
     public String getFileName() {
         return fileName;
     }
 
-    public String getMimeType() {
-        return mimeType;
+    public String getUserId() {
+        return userId;
     }
 }

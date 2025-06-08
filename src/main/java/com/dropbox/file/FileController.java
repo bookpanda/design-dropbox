@@ -1,8 +1,5 @@
 package com.dropbox.file;
 
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,7 +24,7 @@ public class FileController {
     @PostMapping("/upload-url")
     public GetUploadUrlResponse getUploadUrl(@Valid @RequestBody GetUploadUrlRequest request) {
         // client will upload to S3 (user's folder)
-        String uploadUrl = fileService.getUploadUrl("user", request.getFileName(), request.getMimeType());
+        String uploadUrl = fileService.getUploadUrl(request.getUserId(), request.getFileName());
 
         return new GetUploadUrlResponse(uploadUrl);
     }

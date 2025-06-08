@@ -18,7 +18,7 @@ public class FileService {
         // this.baseFile = baseFile;
     }
 
-    public String getUploadUrl(String userId, String fileName, String mimeType) {
+    public String getUploadUrl(String userId, String fileName) {
         return s3Service.generatePresignedUploadUrl(
                 userId,
                 fileName,
