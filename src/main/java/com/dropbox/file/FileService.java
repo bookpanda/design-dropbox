@@ -1,5 +1,8 @@
 package com.dropbox.file;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -7,6 +10,8 @@ import org.springframework.web.server.ResponseStatusException;
 import com.dropbox.file.dto.GetFileResponse;
 import com.dropbox.s3.S3Service;
 import com.dropbox.shares.SharesService;
+
+import software.amazon.awssdk.services.s3.model.HeadObjectResponse;
 
 @Service
 public class FileService {
@@ -23,6 +28,35 @@ public class FileService {
                 userId,
                 fileName,
                 java.time.Duration.ofMinutes(15));
+    }
+
+    public List<GetFileResponse> getFiles(String userId) {
+        var shares = sharesService.getShares(userId);
+
+        List<GetFileResponse> response = shares.parallelStream()
+                .map(share -> {
+                    String key = share.get("fileId").s();
+                    String ownerId = key.split("/")[0];
+                    String fileId = key.substring(ownerId.length() + 1);
+                    HeadObjectResponse metadata = s3Service.getObjectMetadata(ownerId, fileId);
+
+                    var downloadUrl = s3Service.generatePresignedDownloadUrl(
+                            ownerId,
+                            fileId,
+                            java.time.Duration.ofMinutes(15));
+                    var fileName = fileId.split("/").length > 1 ? fileId.split("/")[1] : fileId;
+
+                    return new GetFileResponse(
+                            fileId,
+                            fileName,
+                            metadata.contentLength().toString(),
+                            metadata.contentType(),
+                            downloadUrl,
+                            ownerId);
+
+                }).collect(Collectors.toList());
+
+        return response;
     }
 
     public GetFileResponse getFile(String userId, String ownerId, String fileId) {

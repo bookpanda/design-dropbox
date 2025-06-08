@@ -1,5 +1,7 @@
 package com.dropbox.file;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -64,7 +66,13 @@ public class FileController {
         return ResponseEntity.ok().build();
     }
 
-    // get all avail files
+    @GetMapping
+    public List<GetFileResponse> getAllFiles(@AuthenticationPrincipal Jwt jwt) {
+        String userId = jwt.getClaimAsString("userId");
+        List<GetFileResponse> response = fileService.getFiles(userId);
+
+        return response;
+    }
 
     // do multipart upload
 }

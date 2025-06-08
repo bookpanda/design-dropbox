@@ -6,6 +6,7 @@ import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -45,17 +46,16 @@ public class SharesService {
                 dynamoDbClient.putItem(request);
         }
 
-        public Map<String, AttributeValue> getItem(String userId, String fileId) {
-                Map<String, AttributeValue> key = Map.of(
-                                "userId", AttributeValue.builder().s(userId).build(),
-                                "fileId", AttributeValue.builder().s(fileId).build());
-
-                GetItemRequest request = GetItemRequest.builder()
+        public List<Map<String, AttributeValue>> getShares(String userId) {
+                QueryRequest request = QueryRequest.builder()
                                 .tableName(tableName)
-                                .key(key)
+                                .keyConditionExpression("userId = :uid")
+                                .expressionAttributeValues(Map.of(
+                                                ":uid", AttributeValue.builder().s(userId).build()))
                                 .build();
 
-                return dynamoDbClient.getItem(request).item();
+                QueryResponse response = dynamoDbClient.query(request);
+                return response.items();
         }
 
         public void removeShare(String userId, String fileId) {
