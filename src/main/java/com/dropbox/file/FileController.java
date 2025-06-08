@@ -1,5 +1,6 @@
 package com.dropbox.file;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.dropbox.file.dto.GetFileResponse;
 import com.dropbox.file.dto.GetUploadUrlRequest;
 import com.dropbox.file.dto.GetUploadUrlResponse;
+import com.dropbox.file.dto.ShareFileRequest;
 
 import jakarta.validation.Valid;
 
@@ -28,7 +30,7 @@ public class FileController {
             @Valid @RequestBody GetUploadUrlRequest request) {
         // client will upload to S3 (user's folder)
         String userId = jwt.getClaimAsString("userId");
-        String uploadUrl = fileService.getUploadUrl(userId, request.getFileName());
+        String uploadUrl = fileService.getUploadUrl(userId, request.getFileId());
 
         return new GetUploadUrlResponse(uploadUrl);
     }
@@ -41,5 +43,14 @@ public class FileController {
         GetFileResponse response = fileService.getFile(userId, ownerId, fileId);
 
         return response;
+    }
+
+    @PostMapping("/share")
+    public ResponseEntity<Void> shareFile(@AuthenticationPrincipal Jwt jwt,
+            @Valid @RequestBody ShareFileRequest request) {
+        String ownerId = jwt.getClaimAsString("userId");
+        fileService.shareFile(request.getUserId(), ownerId, request.getFileId());
+
+        return ResponseEntity.ok().build();
     }
 }

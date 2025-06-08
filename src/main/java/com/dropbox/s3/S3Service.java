@@ -49,21 +49,6 @@ public class S3Service {
         return s3Presigner.presignGetObject(presignRequest).url().toString();
     }
 
-    // public void uploadFile(String key, Path filePath) {
-    // s3Client.putObject(PutObjectRequest.builder().bucket(bucket).key(key).build(),
-    // filePath);
-    // }
-
-    // public byte[] downloadFile(String key) {
-    // try {
-    // var inputStream =
-    // s3Client.getObject(GetObjectRequest.builder().bucket(bucket).key(key).build());
-    // return inputStream.readAllBytes();
-    // } catch (IOException e) {
-    // throw new UncheckedIOException("Failed to read S3 object", e);
-    // }
-    // }
-
     public HeadObjectResponse getObjectMetadata(String ownerId, String fileId) {
         var request = HeadObjectRequest.builder()
                 .bucket(bucket)

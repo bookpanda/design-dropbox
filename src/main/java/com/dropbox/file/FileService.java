@@ -41,13 +41,23 @@ public class FileService {
                 fileId,
                 java.time.Duration.ofMinutes(15));
 
+        var fileName = fileId.split("/").length > 1 ? fileId.split("/")[1] : fileId;
+
         return new GetFileResponse(
                 fileId,
-                metadata.metadata().get("Name"),
-                metadata.metadata().get("Size"),
-                metadata.metadata().get("Type"),
+                fileName,
+                metadata.contentLength().toString(),
+                metadata.contentType(),
                 downloadUrl,
-                userId);
+                ownerId);
+    }
+
+    public void shareFile(String userId, String ownerId, String fileId) {
+        if (!sharesService.shareExists(userId, ownerId + "/" + fileId)) {
+            sharesService.addShare(userId, ownerId + "/" + fileId);
+        } else {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "File already shared with this user.");
+        }
     }
 
 }

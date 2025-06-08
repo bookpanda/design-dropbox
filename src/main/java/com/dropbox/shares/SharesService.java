@@ -32,11 +32,10 @@ public class SharesService {
                 return dynamoDbClient.getItem(request).hasItem();
         }
 
-        public void putItem(String userId, String fileName, String metadata) {
+        public void addShare(String userId, String fileId) {
                 Map<String, AttributeValue> item = new HashMap<>();
                 item.put("userId", AttributeValue.builder().s(userId).build());
-                item.put("fileName", AttributeValue.builder().s(fileName).build());
-                item.put("metadata", AttributeValue.builder().s(metadata).build());
+                item.put("fileId", AttributeValue.builder().s(fileId).build());
 
                 PutItemRequest request = PutItemRequest.builder()
                                 .tableName(tableName)
